@@ -22,7 +22,36 @@ const Quiz = () => {
 
     const questionCountOptions = [5, 10, 15, 20, 25, 30];
 
+    // Persist quiz state to localStorage
     useEffect(() => {
+        if (quiz) {
+            const quizState = {
+                quiz,
+                currentQuestionIndex,
+                mode,
+                timeLeft,
+                startTime: Date.now() // Reset start time on refresh to prevent negative elapsed time
+            };
+            localStorage.setItem('active_quiz', JSON.stringify(quizState));
+        }
+    }, [quiz, currentQuestionIndex, mode, timeLeft]);
+
+    // Restore quiz state from localStorage on mount
+    useEffect(() => {
+        const savedQuiz = localStorage.getItem('active_quiz');
+        if (savedQuiz) {
+            try {
+                const { quiz: sQuiz, currentQuestionIndex: sIndex, mode: sMode, timeLeft: sTime } = JSON.parse(savedQuiz);
+                setQuiz(sQuiz);
+                setCurrentQuestionIndex(sIndex);
+                setMode(sMode);
+                setTimeLeft(sTime);
+                setStartTime(Date.now());
+                toast.success('Resumed your session!');
+            } catch (err) {
+                localStorage.removeItem('active_quiz');
+            }
+        }
         fetchTopics();
     }, []);
 
@@ -127,6 +156,7 @@ const Quiz = () => {
     };
 
     const handleSubmitQuiz = () => {
+        localStorage.removeItem('active_quiz');
         navigate(`/results/${quiz.sessionId}`);
     };
 
