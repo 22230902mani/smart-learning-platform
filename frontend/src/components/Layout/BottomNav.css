@@ -1,0 +1,170 @@
+.bottom-nav {
+    display: none;
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 70px;
+    background: rgba(10, 14, 26, 0.98);
+    backdrop-filter: blur(25px);
+    -webkit-backdrop-filter: blur(25px);
+    border-top: 1px solid rgba(0, 229, 255, 0.15);
+    z-index: 1200;
+    justify-content: space-around;
+    align-items: center;
+    padding: 0 0.25rem;
+    box-shadow: 0 -10px 30px rgba(0, 0, 0, 0.5);
+}
+
+.bottom-nav-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-decoration: none;
+    color: rgba(148, 163, 184, 0.6);
+    gap: 0.25rem;
+    flex: 1;
+    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+    padding: 0.5rem 0;
+    min-width: 0;
+}
+
+.bottom-nav-item .nav-icon {
+    font-size: 1.15rem;
+    transition: transform 0.2s ease;
+}
+
+.bottom-nav-item .nav-label {
+    font-size: 0.58rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.02em;
+    white-space: nowrap;
+}
+
+/* Specific styling for the Live Toggle */
+.live-icon-wrapper {
+    width: 38px;
+    height: 38px;
+    background: rgba(0, 229, 255, 0.05);
+    border: 1px solid rgba(0, 229, 255, 0.1);
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 2px;
+    transition: all 0.3s ease;
+}
+
+.bottom-nav-item.active .live-icon-wrapper {
+    background: rgba(0, 229, 255, 0.15);
+    border-color: #00E5FF;
+    box-shadow: 0 0 15px rgba(0, 229, 255, 0.2);
+    transform: translateY(-2px);
+}
+
+.bottom-nav-item.active {
+    color: #00E5FF;
+}
+
+.bottom-nav-item.active .nav-icon {
+    filter: drop-shadow(0 0 8px rgba(0, 229, 255, 0.5));
+}
+
+/* Live Quiz Sub-Menu (Bottom Sheet) */
+.bottom-nav-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.6);
+    backdrop-filter: blur(4px);
+    z-index: 1300;
+    display: none;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+.bottom-nav-overlay.show {
+    display: block;
+    opacity: 1;
+}
+
+.live-quiz-sheet {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background: #0D1117;
+    border-top: 1px solid rgba(0, 229, 255, 0.3);
+    border-radius: 24px 24px 0 0;
+    padding: 1.5rem;
+    transform: translateY(100%);
+    transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    box-shadow: 0 -15px 50px rgba(0, 0, 0, 0.8);
+}
+
+.bottom-nav-overlay.show .live-quiz-sheet {
+    transform: translateY(0);
+}
+
+.sheet-header {
+    text-align: center;
+    margin-bottom: 2rem;
+}
+
+.sheet-indicator {
+    width: 40px;
+    height: 4px;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 2px;
+    margin: 0 auto 1.5rem;
+}
+
+.sheet-header h3 {
+    font-family: 'Orbitron', sans-serif;
+    font-size: 1.1rem;
+    color: #00E5FF;
+    letter-spacing: 1px;
+}
+
+.sheet-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1.25rem;
+    padding-bottom: 2rem;
+}
+
+.sheet-item {
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid rgba(255, 255, 255, 0.05);
+    padding: 1.5rem;
+    border-radius: 20px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.75rem;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.sheet-item:active {
+    background: rgba(0, 229, 255, 0.1);
+    border-color: #00E5FF;
+    transform: scale(0.95);
+}
+
+.sheet-icon {
+    font-size: 1.5rem;
+}
+
+.sheet-item span:last-child {
+    font-size: 0.85rem;
+    font-weight: 700;
+    color: #E2E8F0;
+}
+
+@media (max-width: 1024px) {
+    .bottom-nav {
+        display: flex;
+    }
+}

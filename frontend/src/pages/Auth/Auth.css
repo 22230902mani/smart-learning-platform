@@ -1,0 +1,896 @@
+/* ========================================
+   AUTH PAGE — Neon Dual Theme
+   Login:    Neon Cyan   (#00E5FF)
+   Register: Neon Purple (#A020F0)
+   Both light + dark share the same neon
+   identity; dark mode deepens the effect.
+   ======================================== */
+
+/* ── BASE RESET / FONTS ── */
+@import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@700;900&family=Inter:wght@400;500;600;700;800&display=swap');
+
+/* ════════════════════════════════════════
+   WRAPPER
+════════════════════════════════════════ */
+.auth-page-container {
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 1rem;
+    font-family: 'Inter', system-ui, sans-serif;
+    transition: background 0.35s ease;
+
+    /* Light: soft dark base with subtle cyan/purple radials */
+    background:
+        radial-gradient(ellipse at 20% 50%, rgba(0, 229, 255, 0.07) 0%, transparent 55%),
+        radial-gradient(ellipse at 80% 20%, rgba(160, 32, 240, 0.07) 0%, transparent 55%),
+        #0d1117;
+}
+
+/* ════════════════════════════════════════
+   MAIN CARD
+════════════════════════════════════════ */
+.auth-box {
+    position: relative;
+    width: 100%;
+    max-width: 920px;
+    min-height: 580px;
+    background: rgba(13, 17, 23, 0.92);
+    border-radius: 2rem;
+    border: 1px solid rgba(0, 229, 255, 0.15);
+    box-shadow:
+        0 0 0 1px rgba(0, 229, 255, 0.06),
+        0 24px 64px rgba(0, 0, 0, 0.7),
+        0 0 80px rgba(0, 229, 255, 0.04);
+    overflow: hidden;
+    display: flex;
+    backdrop-filter: blur(24px);
+    -webkit-backdrop-filter: blur(24px);
+    transition: border-color 0.4s ease, box-shadow 0.4s ease;
+}
+
+/* ════════════════════════════════════════
+   BACK HOME BUTTON
+   ════════════════════════════════════════ */
+.back-home-btn {
+    position: absolute;
+    top: 1.5rem;
+    left: 1.5rem;
+    z-index: 10;
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    backdrop-filter: blur(8px);
+    padding: 0.5rem 1rem;
+    border-radius: 12px;
+    color: #94A3B8;
+    font-size: 0.82rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.back-home-btn:hover {
+    background: rgba(255, 255, 255, 0.07);
+    border-color: rgba(0, 229, 255, 0.3);
+    color: #E2E8F0;
+    transform: translateX(-4px);
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+}
+
+.login-active .back-home-btn:hover {
+    color: #00E5FF;
+}
+
+.register-active .back-home-btn:hover {
+    color: #C084FC;
+    border-color: rgba(160, 32, 240, 0.3);
+}
+
+.back-icon {
+    font-size: 1.1rem;
+}
+
+/* Card border shifts to purple when register is active */
+.register-active .auth-box {
+    border-color: rgba(160, 32, 240, 0.18);
+    box-shadow:
+        0 0 0 1px rgba(160, 32, 240, 0.08),
+        0 24px 64px rgba(0, 0, 0, 0.7),
+        0 0 80px rgba(160, 32, 240, 0.05);
+}
+
+/* ════════════════════════════════════════
+   DIAGONAL OVERLAY (decorative right/left panel)
+════════════════════════════════════════ */
+.diagonal-overlay {
+    position: absolute;
+    top: 0;
+    right: 0;
+    width: 42%;
+    height: 100%;
+    z-index: 1;
+    transition: all 0.45s ease;
+}
+
+/* Login: Cyan panel on the RIGHT */
+.login-active .diagonal-overlay {
+    background: linear-gradient(160deg, rgba(0, 229, 255, 0.12) 0%, rgba(0, 100, 130, 0.25) 100%);
+    border-left: 1px solid rgba(0, 229, 255, 0.22);
+    right: 0;
+    left: auto;
+    clip-path: polygon(12% 0%, 100% 0%, 100% 100%, 0% 100%);
+    box-shadow: inset -1px 0 30px rgba(0, 229, 255, 0.05);
+}
+
+/* Register: Purple panel on the LEFT */
+.register-active .diagonal-overlay {
+    background: linear-gradient(160deg, rgba(160, 32, 240, 0.15) 0%, rgba(80, 10, 140, 0.25) 100%);
+    border-right: 1px solid rgba(160, 32, 240, 0.25);
+    right: auto;
+    left: 0;
+    clip-path: polygon(0% 0%, 100% 0%, 88% 100%, 0% 100%);
+    box-shadow: inset 1px 0 30px rgba(160, 32, 240, 0.06);
+}
+
+/* ═══════════════════════════════════════
+   ANIMATED GRID SCANLINES (decorative)
+═══════════════════════════════════════ */
+.diagonal-overlay::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background-image:
+        repeating-linear-gradient(0deg,
+            transparent,
+            transparent 28px,
+            rgba(255, 255, 255, 0.015) 28px,
+            rgba(255, 255, 255, 0.015) 29px);
+    pointer-events: none;
+}
+
+/* ════════════════════════════════════════
+   AUTH PANELS
+════════════════════════════════════════ */
+.auth-panel {
+    position: relative;
+    z-index: 2;
+    display: flex;
+    align-items: center;
+    width: 58%;
+    padding: 3.25rem 3.75rem;
+    transition: all 0.4s ease;
+}
+
+.auth-panel.inactive {
+    display: none;
+}
+
+.auth-panel.active {
+    display: flex;
+}
+
+.panel-content {
+    width: 100%;
+}
+
+/* Register panel positions to the right (form side) when register is active */
+.register-active .register-panel {
+    order: 2;
+    margin-left: auto;
+}
+
+/* ════════════════════════════════════════
+   TITLE
+════════════════════════════════════════ */
+.auth-title {
+    font-family: 'Orbitron', 'Inter', sans-serif;
+    font-size: 2.5rem;
+    font-weight: 900;
+    letter-spacing: 0.08em;
+    line-height: 1;
+    margin-bottom: 0.5rem;
+    /* Login default = cyan gradient text */
+    background: linear-gradient(135deg, #00E5FF 0%, #33EEFF 50%, #00BCD4 100%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+    filter: drop-shadow(0 0 12px rgba(0, 229, 255, 0.5));
+}
+
+/* Register panel title = purple */
+.register-panel .auth-title {
+    background: linear-gradient(135deg, #C084FC 0%, #A020F0 50%, #7C3AED 100%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+    filter: drop-shadow(0 0 12px rgba(160, 32, 240, 0.55));
+}
+
+.auth-subtitle {
+    font-size: 0.9rem;
+    color: rgba(148, 163, 184, 0.75);
+    margin-bottom: 2rem;
+    letter-spacing: 0.04em;
+}
+
+/* ════════════════════════════════════════
+   ERROR BOX
+════════════════════════════════════════ */
+.auth-error {
+    background: rgba(255, 68, 68, 0.08);
+    border: 1px solid rgba(255, 68, 68, 0.28);
+    color: #FCA5A5;
+    padding: 0.75rem 1rem;
+    border-radius: 10px;
+    font-size: 0.875rem;
+    margin-bottom: 1.25rem;
+}
+
+/* ════════════════════════════════════════
+   INPUT GROUP — floating label
+════════════════════════════════════════ */
+.input-group {
+    position: relative;
+    margin-bottom: 1.5rem;
+}
+
+.input-group input {
+    width: 100%;
+    padding: 1.5rem 1rem 0.5rem;
+    border: 1.5px solid rgba(0, 229, 255, 0.12);
+    border-radius: 12px;
+    background: rgba(0, 229, 255, 0.03);
+    color: #E2E8F0;
+    font-size: 1rem;
+    font-family: inherit;
+    outline: none;
+    transition: all 0.25s ease;
+    box-sizing: border-box;
+}
+
+.input-group input::placeholder {
+    color: transparent;
+}
+
+.input-group label {
+    position: absolute;
+    left: 1rem;
+    top: 1rem;
+    font-size: 0.875rem;
+    color: rgba(148, 163, 184, 0.6);
+    pointer-events: none;
+    transition: all 0.22s ease;
+    transform-origin: left top;
+}
+
+/* Float label — Login (cyan) */
+.login-panel .input-group input:focus~label,
+.login-panel .input-group input:not(:placeholder-shown)~label {
+    transform: translateY(-0.5rem) scale(0.78);
+    color: #00E5FF;
+}
+
+.login-panel .input-group input:focus {
+    border-color: #00E5FF;
+    background: rgba(0, 229, 255, 0.05);
+    box-shadow: 0 0 0 3px rgba(0, 229, 255, 0.12), 0 0 16px rgba(0, 229, 255, 0.08);
+}
+
+/* Float label — Register (purple) */
+.register-panel .input-group input {
+    border-color: rgba(160, 32, 240, 0.14);
+    background: rgba(160, 32, 240, 0.03);
+}
+
+.register-panel .input-group input:focus~label,
+.register-panel .input-group input:not(:placeholder-shown)~label {
+    transform: translateY(-0.5rem) scale(0.78);
+    color: #C084FC;
+}
+
+.register-panel .input-group input:focus {
+    border-color: #A020F0;
+    background: rgba(160, 32, 240, 0.06);
+    box-shadow: 0 0 0 3px rgba(160, 32, 240, 0.14), 0 0 16px rgba(160, 32, 240, 0.09);
+}
+
+.input-highlight {
+    display: block;
+    height: 2px;
+    background: transparent;
+}
+
+.password-toggle {
+    position: absolute;
+    right: 1rem;
+    top: 55%;
+    transform: translateY(-50%);
+    background: none;
+    border: none;
+    color: rgba(148, 163, 184, 0.6);
+    font-size: 1.1rem;
+    cursor: pointer;
+    padding: 0.5rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s ease;
+    z-index: 5;
+}
+
+.password-toggle:hover {
+    color: #E2E8F0;
+    transform: translateY(-50%) scale(1.1);
+}
+
+.login-panel .password-toggle:hover {
+    color: #00E5FF;
+}
+
+.register-panel .password-toggle:hover {
+    color: #C084FC;
+}
+
+
+
+/* ════════════════════════════════════════
+   BUTTONS
+════════════════════════════════════════ */
+.neon-btn {
+    width: 100%;
+    padding: 0.9rem 2rem;
+    border: none;
+    border-radius: 50px;
+    font-size: 0.9rem;
+    font-family: 'Orbitron', 'Inter', sans-serif;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    margin-top: 0.5rem;
+    margin-bottom: 1.25rem;
+    position: relative;
+    overflow: hidden;
+}
+
+/* Shimmer sweep on hover */
+.neon-btn::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 60%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.18), transparent);
+    transition: left 0.45s ease;
+    pointer-events: none;
+}
+
+.neon-btn:hover::after {
+    left: 150%;
+}
+
+/* ── Cyan Button (Login) ── */
+.cyan-btn {
+    background: linear-gradient(135deg, #00E5FF 0%, #0097A7 100%);
+    color: #030712;
+    box-shadow: 0 4px 20px rgba(0, 229, 255, 0.40), 0 0 0 1px rgba(0, 229, 255, 0.2);
+}
+
+.cyan-btn:hover:not(:disabled) {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 32px rgba(0, 229, 255, 0.60), 0 0 40px rgba(0, 229, 255, 0.15), 0 0 0 1px rgba(0, 229, 255, 0.3);
+    background: linear-gradient(135deg, #33EEFF 0%, #00BCD4 100%);
+}
+
+/* ── Purple Button (Register) ── */
+.purple-btn {
+    background: linear-gradient(135deg, #C084FC 0%, #A020F0 50%, #7C3AED 100%);
+    color: #FFFFFF;
+    box-shadow: 0 4px 20px rgba(160, 32, 240, 0.45), 0 0 0 1px rgba(160, 32, 240, 0.25);
+}
+
+.purple-btn:hover:not(:disabled) {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 32px rgba(160, 32, 240, 0.65), 0 0 40px rgba(160, 32, 240, 0.18), 0 0 0 1px rgba(160, 32, 240, 0.35);
+    background: linear-gradient(135deg, #D8A4FF 0%, #C020FF 50%, #9A4AFF 100%);
+}
+
+.neon-btn:disabled {
+    opacity: 0.55;
+    cursor: not-allowed;
+}
+
+.neon-btn:disabled::after {
+    display: none;
+}
+
+/* ════════════════════════════════════════
+   SWITCH TEXT
+════════════════════════════════════════ */
+.auth-switch-text {
+    font-size: 0.875rem;
+    color: rgba(100, 116, 139, 0.8);
+    text-align: center;
+}
+
+/* Login panel — cyan link */
+.login-panel .auth-switch-text span {
+    color: #00E5FF;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    text-shadow: 0 0 8px rgba(0, 229, 255, 0.35);
+}
+
+.login-panel .auth-switch-text span:hover {
+    text-shadow: 0 0 14px rgba(0, 229, 255, 0.7);
+    text-decoration: underline;
+}
+
+/* Register panel — purple link */
+.register-panel .auth-switch-text span {
+    color: #C084FC;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    text-shadow: 0 0 8px rgba(160, 32, 240, 0.35);
+}
+
+.register-panel .auth-switch-text span:hover {
+    text-shadow: 0 0 14px rgba(160, 32, 240, 0.7);
+    text-decoration: underline;
+}
+
+/* ════════════════════════════════════════
+   GRAPHIC SIDE (decorative panel text)
+════════════════════════════════════════ */
+.graphic-side-content {
+    position: absolute;
+    top: 0;
+    right: 0;
+    width: 42%;
+    height: 100%;
+    z-index: 3;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    pointer-events: none;
+}
+
+.register-active .graphic-side-content {
+    right: auto;
+    left: 0;
+}
+
+.graphic-text {
+    text-align: center;
+}
+
+/* Login side: cyan glow text */
+.graphic-text h2 {
+    font-family: 'Orbitron', sans-serif;
+    font-size: 2.25rem;
+    font-weight: 900;
+    color: rgba(0, 229, 255, 0.9);
+    line-height: 1.15;
+    letter-spacing: 0.1em;
+    text-shadow:
+        0 0 20px rgba(0, 229, 255, 0.6),
+        0 0 40px rgba(0, 229, 255, 0.3),
+        0 0 70px rgba(0, 229, 255, 0.15);
+}
+
+/* Register side: purple glow text */
+.register-active .graphic-text h2 {
+    color: rgba(192, 132, 252, 0.9);
+    text-shadow:
+        0 0 20px rgba(160, 32, 240, 0.6),
+        0 0 40px rgba(160, 32, 240, 0.3),
+        0 0 70px rgba(160, 32, 240, 0.15);
+}
+
+.login-graphic {
+    display: block;
+}
+
+.register-graphic {
+    display: none;
+}
+
+.register-active .login-graphic {
+    display: none;
+}
+
+.register-active .register-graphic {
+    display: block;
+}
+
+/* ════════════════════════════════════════
+   LEGACY ROUTES: Login.jsx / Register.jsx
+════════════════════════════════════════ */
+.auth-container {
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 2rem;
+    background:
+        radial-gradient(ellipse at 20% 50%, rgba(0, 229, 255, 0.06) 0%, transparent 55%),
+        #0d1117;
+}
+
+.auth-card {
+    background: rgba(13, 17, 23, 0.92);
+    border-radius: 1.5rem;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.65), 0 0 0 1px rgba(0, 229, 255, 0.12);
+    border: 1px solid rgba(0, 229, 255, 0.14);
+    overflow: hidden;
+    display: flex;
+    width: 100%;
+    max-width: 860px;
+    min-height: 500px;
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+}
+
+.auth-form-section {
+    flex: 1;
+    padding: 3rem;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+.auth-welcome-section {
+    width: 40%;
+    background: linear-gradient(160deg, rgba(0, 229, 255, 0.15) 0%, rgba(0, 80, 100, 0.3) 100%);
+    border-left: 1px solid rgba(0, 229, 255, 0.18);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 2rem;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.register-layout .auth-welcome-section {
+    background: linear-gradient(160deg, rgba(160, 32, 240, 0.18) 0%, rgba(70, 10, 120, 0.3) 100%);
+    border-left: none;
+    border-right: 1px solid rgba(160, 32, 240, 0.22);
+    order: -1;
+}
+
+.welcome-text {
+    font-family: 'Orbitron', sans-serif;
+    font-size: 2.25rem;
+    font-weight: 900;
+    line-height: 1.1;
+    text-align: center;
+    color: rgba(0, 229, 255, 0.9);
+    text-shadow: 0 0 20px rgba(0, 229, 255, 0.55), 0 0 40px rgba(0, 229, 255, 0.25);
+}
+
+.register-layout .welcome-text {
+    color: rgba(192, 132, 252, 0.9);
+    text-shadow: 0 0 20px rgba(160, 32, 240, 0.55), 0 0 40px rgba(160, 32, 240, 0.25);
+}
+
+.welcome-subtext {
+    color: rgba(148, 163, 184, 0.7);
+    text-align: center;
+    font-size: 0.95rem;
+}
+
+.form-group {
+    position: relative;
+    margin-bottom: 1.25rem;
+}
+
+.form-label {
+    display: block;
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: rgba(100, 116, 139, 0.85);
+    margin-bottom: 0.35rem;
+    letter-spacing: 0.04em;
+}
+
+.form-input {
+    width: 100%;
+    padding: 0.85rem 1rem;
+    border: 1.5px solid rgba(0, 229, 255, 0.12);
+    border-radius: 10px;
+    background: rgba(0, 229, 255, 0.03);
+    color: #E2E8F0;
+    font-size: 0.95rem;
+    font-family: inherit;
+    outline: none;
+    transition: all 0.22s ease;
+    box-sizing: border-box;
+}
+
+.form-input:focus {
+    border-color: #00E5FF;
+    box-shadow: 0 0 0 3px rgba(0, 229, 255, 0.13), 0 0 16px rgba(0, 229, 255, 0.08);
+    background: rgba(0, 229, 255, 0.05);
+}
+
+.register-layout .form-input {
+    border-color: rgba(160, 32, 240, 0.14);
+    background: rgba(160, 32, 240, 0.03);
+}
+
+.register-layout .form-input:focus {
+    border-color: #A020F0;
+    box-shadow: 0 0 0 3px rgba(160, 32, 240, 0.14), 0 0 16px rgba(160, 32, 240, 0.09);
+    background: rgba(160, 32, 240, 0.05);
+}
+
+.input-icon {
+    position: absolute;
+    right: 1rem;
+    top: 50%;
+    transform: translateY(-50%);
+    font-size: 1.1rem;
+    pointer-events: none;
+    margin-top: 0.5rem;
+}
+
+.btn-block {
+    width: 100%;
+    padding: 0.875rem;
+    border: none;
+    border-radius: 50px;
+    font-family: 'Orbitron', 'Inter', sans-serif;
+    font-size: 0.9rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    margin-top: 0.5rem;
+    /* Default: Cyan (login) */
+    background: linear-gradient(135deg, #00E5FF 0%, #0097A7 100%);
+    color: #030712;
+    box-shadow: 0 4px 20px rgba(0, 229, 255, 0.40), 0 0 0 1px rgba(0, 229, 255, 0.2);
+}
+
+.btn-block:hover:not(:disabled) {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 32px rgba(0, 229, 255, 0.60), 0 0 40px rgba(0, 229, 255, 0.15);
+}
+
+.btn-block:disabled {
+    opacity: 0.55;
+    cursor: not-allowed;
+}
+
+/* Legacy subtitle */
+.auth-subtitle {
+    font-size: 0.875rem;
+    color: rgba(100, 116, 139, 0.8);
+}
+
+.auth-subtitle a {
+    color: #00E5FF;
+    font-weight: 600;
+    text-decoration: none;
+    text-shadow: 0 0 8px rgba(0, 229, 255, 0.35);
+}
+
+.auth-subtitle a:hover {
+    text-decoration: underline;
+    text-shadow: 0 0 14px rgba(0, 229, 255, 0.7);
+}
+
+/* ══════════════════════════════════════
+   RESPONSIVE
+══════════════════════════════════════ */
+@media (max-width: 768px) {
+    .auth-page-container {
+        padding: 0.75rem;
+    }
+
+    .auth-box {
+        flex-direction: column;
+        max-width: 440px;
+        border-radius: 1.5rem;
+        min-height: auto;
+    }
+
+    .diagonal-overlay {
+        display: none;
+    }
+
+    .graphic-side-content {
+        display: none;
+    }
+
+    .auth-panel {
+        width: 100%;
+        padding: 3rem 1.5rem 2.5rem;
+    }
+
+    .auth-card {
+        flex-direction: column;
+    }
+
+    .auth-welcome-section {
+        width: 100%;
+        padding: 2rem;
+        min-height: 160px;
+    }
+
+    .auth-title {
+        font-size: 2.1rem;
+        text-align: center;
+    }
+
+    .auth-subtitle {
+        text-align: center;
+        margin-bottom: 2.5rem;
+    }
+
+    .back-home-btn {
+        top: 1rem;
+        left: 1rem;
+        padding: 0.4rem 0.8rem;
+        font-size: 0.75rem;
+    }
+}
+
+
+/* ══════════════════════════════════════
+   DARK MODE — deeper neon glassmorphism
+   (same hues, amplified glow intensity)
+══════════════════════════════════════ */
+[data-theme="dark"] .auth-page-container {
+    background:
+        radial-gradient(ellipse at 18% 50%, rgba(0, 229, 255, 0.055) 0%, transparent 58%),
+        radial-gradient(ellipse at 82% 18%, rgba(160, 32, 240, 0.055) 0%, transparent 58%),
+        #060810;
+}
+
+[data-theme="dark"] .auth-box {
+    background: rgba(6, 8, 16, 0.95);
+    border-color: rgba(0, 229, 255, 0.18);
+    box-shadow:
+        0 0 0 1px rgba(0, 229, 255, 0.07),
+        0 28px 80px rgba(0, 0, 0, 0.85),
+        0 0 100px rgba(0, 229, 255, 0.04);
+}
+
+[data-theme="dark"] .register-active .auth-box {
+    border-color: rgba(160, 32, 240, 0.22);
+    box-shadow:
+        0 0 0 1px rgba(160, 32, 240, 0.09),
+        0 28px 80px rgba(0, 0, 0, 0.85),
+        0 0 100px rgba(160, 32, 240, 0.05);
+}
+
+[data-theme="dark"] .login-active .diagonal-overlay {
+    background: linear-gradient(160deg, rgba(0, 229, 255, 0.09) 0%, rgba(0, 40, 60, 0.45) 100%);
+    border-left-color: rgba(0, 229, 255, 0.28);
+}
+
+[data-theme="dark"] .register-active .diagonal-overlay {
+    background: linear-gradient(160deg, rgba(160, 32, 240, 0.12) 0%, rgba(50, 5, 90, 0.45) 100%);
+    border-right-color: rgba(160, 32, 240, 0.30);
+}
+
+/* Dark: amplified input glow */
+[data-theme="dark"] .login-panel .input-group input:focus {
+    box-shadow: 0 0 0 3px rgba(0, 229, 255, 0.18), 0 0 24px rgba(0, 229, 255, 0.14);
+}
+
+[data-theme="dark"] .register-panel .input-group input:focus {
+    box-shadow: 0 0 0 3px rgba(160, 32, 240, 0.20), 0 0 24px rgba(160, 32, 240, 0.14);
+}
+
+/* Dark: amplified button glow */
+[data-theme="dark"] .cyan-btn {
+    box-shadow: 0 4px 24px rgba(0, 229, 255, 0.50), 0 0 0 1px rgba(0, 229, 255, 0.25);
+}
+
+[data-theme="dark"] .cyan-btn:hover:not(:disabled) {
+    box-shadow: 0 8px 40px rgba(0, 229, 255, 0.75), 0 0 60px rgba(0, 229, 255, 0.20), 0 0 0 1px rgba(0, 229, 255, 0.35);
+}
+
+[data-theme="dark"] .purple-btn {
+    box-shadow: 0 4px 24px rgba(160, 32, 240, 0.55), 0 0 0 1px rgba(160, 32, 240, 0.30);
+}
+
+[data-theme="dark"] .purple-btn:hover:not(:disabled) {
+    box-shadow: 0 8px 40px rgba(160, 32, 240, 0.78), 0 0 60px rgba(160, 32, 240, 0.22), 0 0 0 1px rgba(160, 32, 240, 0.40);
+}
+
+/* Dark: amplified heading glow */
+[data-theme="dark"] .auth-title {
+    filter: drop-shadow(0 0 18px rgba(0, 229, 255, 0.7));
+}
+
+[data-theme="dark"] .register-panel .auth-title {
+    filter: drop-shadow(0 0 18px rgba(160, 32, 240, 0.75));
+}
+
+/* Dark: amplified graphic text glow */
+[data-theme="dark"] .graphic-text h2 {
+    text-shadow:
+        0 0 25px rgba(0, 229, 255, 0.80),
+        0 0 55px rgba(0, 229, 255, 0.40),
+        0 0 90px rgba(0, 229, 255, 0.18);
+}
+
+[data-theme="dark"] .register-active .graphic-text h2 {
+    text-shadow:
+        0 0 25px rgba(160, 32, 240, 0.80),
+        0 0 55px rgba(160, 32, 240, 0.40),
+        0 0 90px rgba(160, 32, 240, 0.18);
+}
+
+/* Dark: switch text links */
+[data-theme="dark"] .login-panel .auth-switch-text span {
+    text-shadow: 0 0 12px rgba(0, 229, 255, 0.55);
+}
+
+[data-theme="dark"] .login-panel .auth-switch-text span:hover {
+    text-shadow: 0 0 20px rgba(0, 229, 255, 0.90);
+}
+
+[data-theme="dark"] .register-panel .auth-switch-text span {
+    text-shadow: 0 0 12px rgba(160, 32, 240, 0.55);
+}
+
+[data-theme="dark"] .register-panel .auth-switch-text span:hover {
+    text-shadow: 0 0 20px rgba(160, 32, 240, 0.90);
+}
+
+/* Dark legacy card routes */
+[data-theme="dark"] .auth-container {
+    background:
+        radial-gradient(ellipse at 20% 50%, rgba(0, 229, 255, 0.05) 0%, transparent 55%),
+        #060810;
+}
+
+[data-theme="dark"] .auth-card {
+    background: rgba(6, 8, 16, 0.95);
+    border-color: rgba(0, 229, 255, 0.18);
+    box-shadow: 0 24px 72px rgba(0, 0, 0, 0.80), 0 0 0 1px rgba(0, 229, 255, 0.08);
+}
+
+[data-theme="dark"] .form-input {
+    color: #E2E8F0;
+    background: rgba(0, 229, 255, 0.025);
+    border-color: rgba(0, 229, 255, 0.15);
+}
+
+[data-theme="dark"] .form-input:focus {
+    border-color: #00E5FF;
+    box-shadow: 0 0 0 3px rgba(0, 229, 255, 0.18), 0 0 24px rgba(0, 229, 255, 0.12);
+}
+
+[data-theme="dark"] .register-layout .form-input {
+    border-color: rgba(160, 32, 240, 0.17);
+    background: rgba(160, 32, 240, 0.025);
+}
+
+[data-theme="dark"] .register-layout .form-input:focus {
+    border-color: #A020F0;
+    box-shadow: 0 0 0 3px rgba(160, 32, 240, 0.20), 0 0 24px rgba(160, 32, 240, 0.12);
+}
+
+[data-theme="dark"] .btn-block {
+    box-shadow: 0 4px 24px rgba(0, 229, 255, 0.50), 0 0 0 1px rgba(0, 229, 255, 0.25);
+}
+
+[data-theme="dark"] .btn-block:hover:not(:disabled) {
+    box-shadow: 0 8px 40px rgba(0, 229, 255, 0.75), 0 0 60px rgba(0, 229, 255, 0.20);
+}
+
+[data-theme="dark"] .auth-subtitle a {
+    text-shadow: 0 0 10px rgba(0, 229, 255, 0.45);
+}

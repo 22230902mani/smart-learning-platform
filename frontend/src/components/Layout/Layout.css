@@ -1,0 +1,60 @@
+/* ========================================
+   LAYOUT — Solid Color Light Theme
+   ======================================== */
+
+.layout-container {
+    display: flex;
+    min-height: 100vh;
+    background: var(--bg-primary);
+    color: var(--text-primary);
+    position: relative;
+    transition: background 0.35s ease;
+}
+
+.main-content {
+    flex: 1;
+    margin-left: 280px;
+    padding: 2rem;
+    width: calc(100% - 280px);
+    overflow-x: hidden;
+    min-height: 100vh;
+    position: relative;
+    z-index: 1;
+    background: var(--bg-primary);
+    transition: background 0.35s ease;
+}
+
+@media (max-width: 1024px) {
+    .main-content {
+        margin-left: 0;
+        width: 100%;
+        padding: 7.5rem 1.25rem 5rem 1.25rem;
+        /* 120px top, 80px bottom for safety */
+    }
+
+    .sidebar-backdrop {
+        position: fixed;
+        inset: 0;
+        background: rgba(0, 0, 0, 0.4);
+        backdrop-filter: blur(4px);
+        -webkit-backdrop-filter: blur(4px);
+        z-index: 999;
+        animation: fadeIn 0.3s ease-out;
+    }
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+    }
+
+    to {
+        opacity: 1;
+    }
+}
+
+@media (max-width: 768px) {
+    .main-content {
+        padding: 4.5rem 1rem 2rem 1rem;
+    }
+}
