@@ -348,58 +348,62 @@ exports.submitAnswer = async (req, res, next) => {
             confidence: confidence || 'medium'
         });
 
-        // Initialize statistics if they don't exist (legacy fallback)
-        if (!question.statistics) {
-            question.statistics = { totalAttempts: 0, correctAttempts: 0, averageTime: 0 };
-        }
-
-        // Update question statistics
-        question.statistics.totalAttempts += 1;
-        if (isCorrect) {
-            question.statistics.correctAttempts += 1;
-        }
-        question.statistics.averageTime =
-            (question.statistics.averageTime * (question.statistics.totalAttempts - 1) + responseTime)
-            / question.statistics.totalAttempts;
-        await question.save();
-
-        // Handle mistake logging
-        if (!isCorrect) {
-            let mistakeLog = await MistakeLog.findOne({ userId, questionId });
-
-            if (mistakeLog) {
-                mistakeLog.mistakeCount += 1;
-                mistakeLog.lastMistakeDate = Date.now();
-                mistakeLog.consecutiveCorrect = 0;
-            } else {
-                mistakeLog = await MistakeLog.create({
-                    userId,
-                    questionId,
-                    topicId: question.topicId,
-                    attemptId: attempt._id
-                });
-            }
-
-            await mistakeLog.save();
-        } else {
-            // Update consecutive correct count
-            let mistakeLog = await MistakeLog.findOne({ userId, questionId });
-
-            if (mistakeLog) {
-                mistakeLog.consecutiveCorrect += 1;
-
-                // Mark as resolved if 3 consecutive correct answers
-                if (mistakeLog.consecutiveCorrect >= 3) {
-                    mistakeLog.resolved = true;
-                    mistakeLog.resolvedDate = Date.now();
+        // Update statistics in background (Don't await to keep response fast)
+        const runBackgroundUpdates = async () => {
+            try {
+                // Initialize statistics if they don't exist
+                if (!question.statistics) {
+                    question.statistics = { totalAttempts: 0, correctAttempts: 0, averageTime: 0 };
                 }
 
-                await mistakeLog.save();
-            }
-        }
+                // Update question statistics
+                question.statistics.totalAttempts += 1;
+                if (isCorrect) {
+                    question.statistics.correctAttempts += 1;
+                }
+                question.statistics.averageTime =
+                    (question.statistics.averageTime * (question.statistics.totalAttempts - 1) + responseTime)
+                    / question.statistics.totalAttempts;
+                await question.save();
 
-        // Update topic statistics
-        await updateTopicStats(userId, question.topicId, isCorrect, responseTime);
+                // Handle mistake logging
+                if (!isCorrect) {
+                    let mistakeLog = await MistakeLog.findOne({ userId, questionId });
+
+                    if (mistakeLog) {
+                        mistakeLog.mistakeCount += 1;
+                        mistakeLog.lastMistakeDate = Date.now();
+                        mistakeLog.consecutiveCorrect = 0;
+                    } else {
+                        mistakeLog = await MistakeLog.create({
+                            userId,
+                            questionId,
+                            topicId: question.topicId,
+                            attemptId: attempt._id
+                        });
+                    }
+                    await mistakeLog.save();
+                } else {
+                    let mistakeLog = await MistakeLog.findOne({ userId, questionId });
+                    if (mistakeLog) {
+                        mistakeLog.consecutiveCorrect += 1;
+                        if (mistakeLog.consecutiveCorrect >= 3) {
+                            mistakeLog.resolved = true;
+                            mistakeLog.resolvedDate = Date.now();
+                        }
+                        await mistakeLog.save();
+                    }
+                }
+
+                // Update topic statistics
+                await updateTopicStats(userId, question.topicId, isCorrect, responseTime);
+            } catch (bgError) {
+                console.error('[Quiz] Background update failed:', bgError.message);
+            }
+        };
+
+        // Fire and forget background updates
+        runBackgroundUpdates();
 
         res.status(200).json({
             success: true,
